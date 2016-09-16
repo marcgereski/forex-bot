@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="mapdb">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/lib/mapdb" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="file://$PROJECT_DIR$/lib/mapdb" />
+    </SOURCES>
+    <jarDirectory url="file://$PROJECT_DIR$/lib/mapdb" recursive="false" />
+    <jarDirectory url="file://$PROJECT_DIR$/lib/mapdb" recursive="false" type="SOURCES" />
+  </library>
+</component>

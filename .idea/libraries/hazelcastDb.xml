@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="hazelcastDb">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/lib/hazelcastDb" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+    <jarDirectory url="file://$PROJECT_DIR$/lib/hazelcastDb" recursive="false" />
+  </library>
+</component>
