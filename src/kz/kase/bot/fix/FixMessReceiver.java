@@ -29,11 +29,14 @@ public class FixMessReceiver {
         } else if (data instanceof MDIncRefresh) {
             update = interpreter.processAndStore((MDIncRefresh) data);
 
-//        } else if (data instanceof MDFullSnapshotRefresh) {
+        } else if (data instanceof MDFullSnapshotRefresh) {
 //            update = interpreter.processAndStore((MDFullSnapshotRefresh) data);
+            System.out.println();
 
-//        } else if (data instanceof PositionReport) {
+        } else if (data instanceof PositionReport) {
+//            todo implement 'processAndStore(...)'
 //            update = interpreter.processAndStore((PositionReport) data);
+            System.out.println();
 
 //        } else if (data instanceof ExecutionReport) {
 //            update = interpreter.processAndStore((ExecutionReport) data);

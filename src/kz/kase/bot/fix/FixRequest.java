@@ -12,7 +12,7 @@ import java.util.List;
 
 public class FixRequest {
 
-    private static final Logger log = Logger.getLogger("");
+    private static final Logger log = Logger.getLogger(FixRequest.class);
 
     public static void sendSecurityRequest(QuickFixClient fixClient) {
         long ref = QuickFixClient.nextRef();
@@ -66,6 +66,10 @@ public class FixRequest {
                 .setQty(qty)
                 .setSide(side)
                 .setExpireDate(new Date());
+        fixClient.sendMessage(order);
+    }
+
+    public static void sendNewOrderSingle(QuickFixClient fixClient, NewOrderSingle order) {
         fixClient.sendMessage(order);
     }
 }

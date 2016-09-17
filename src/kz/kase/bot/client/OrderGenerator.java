@@ -3,15 +3,21 @@ package kz.kase.bot.client;
 
 import kz.kase.bot.model.domain.InstrHolder;
 import kz.kase.bot.storage.Storage;
+import kz.kase.fix.SecStatus;
 import kz.kase.fix.Side;
+import kz.kase.fix.TradeCondition;
 import kz.kase.fix.messages.NewOrderSingle;
+import org.apache.log4j.Logger;
 
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 public class OrderGenerator {
     private final Random random;
     private final Storage storage;
+
+    private final static Logger log = Logger.getLogger(OrderGenerator.class);
 
     public OrderGenerator(Storage storage) {
         this.random = new Random(System.currentTimeMillis());
@@ -33,16 +39,27 @@ public class OrderGenerator {
         return lastDealPrice + lastDealPrice * d / 100000;
     }
 
-    public long nextRandomQty(long minQty) {
+    public long nextRandomQty(long lot) {
         int f = random.nextInt(7);
-        return minQty * f;
+        return lot * f;
     }
 
     public NewOrderSingle nextRandomOrder() {
-        List<InstrHolder> instrs = storage.findAll(InstrHolder.class);
+        List<InstrHolder> ihs = storage.findAll(InstrHolder.class);
+        List<InstrHolder> instrs = ihs.stream()
+                .filter(i->i.getStatus().equals(SecStatus.Active))
+                .collect(Collectors.toList());
+
         int num = instrs.size();
+
+        if (num == 0) {
+            log.info("All Instruments are closed.");
+            return null;
+        }
+
         int index = nextRandomIdx(num);
         InstrHolder instr = instrs.get(index);
+
         double price = nextRandomPrice(instr.getLastPx(), (int) Math.round(instr.getDevLimitLastDealPrc() * 1000));
 
         NewOrderSingle order = new NewOrderSingle();
@@ -50,7 +67,7 @@ public class OrderGenerator {
                 .setAccount("")
                 .setSide(nextRandomSide())
                 .setPrice(price)
-                .setQty(nextRandomQty(instr.getMinQty()));
+                .setQty(nextRandomQty(instr.getLot()));
         return order;
     }
 }

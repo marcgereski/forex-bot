@@ -13,7 +13,6 @@ import java.util.Random;
 public class Orders {
     private final InMemoryHazelcastStorage storage = InMemoryHazelcastStorage.getInstance();
     private final Random random = new Random(System.currentTimeMillis());
-    private List<InstrHolder> instrs;
 
     @Before
     public void fillHolders() {
@@ -33,9 +32,6 @@ public class Orders {
         instr1.setDevLimitLastDealPrc(1D);
         instr1.setMinQty(50000);
         storage.put(instr1, instr1.getSymbol());
-
-        instrs = storage.findAll(InstrHolder.class);
-        Assert.assertNotNull(instrs);
     }
 
     @After
@@ -46,6 +42,8 @@ public class Orders {
     @Ignore
     @Test
     public void createRandomOrder() {
+        List<InstrHolder> instrs = storage.findAll(InstrHolder.class);
+        Assert.assertNotNull(instrs);
 
         int num = instrs.size();
         Assert.assertTrue(num > 0);
