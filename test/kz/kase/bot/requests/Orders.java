@@ -1,19 +1,19 @@
 package kz.kase.bot.requests;
 
 
+import kz.kase.bot.client.OrderGenerator;
 import kz.kase.bot.model.domain.InstrHolder;
 import kz.kase.bot.storage.InMemoryHazelcastStorage;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import kz.kase.fix.messages.NewOrderSingle;
+import org.junit.*;
 
 import java.util.List;
 import java.util.Random;
 
 public class Orders {
-    private InMemoryHazelcastStorage storage = InMemoryHazelcastStorage.getInstance();
-    private Random random = new Random(System.currentTimeMillis());
+    private final InMemoryHazelcastStorage storage = InMemoryHazelcastStorage.getInstance();
+    private final Random random = new Random(System.currentTimeMillis());
+    private List<InstrHolder> instrs;
 
     @Before
     public void fillHolders() {
@@ -24,9 +24,7 @@ public class Orders {
         instr.setLastPx(340.0);
         instr.setDevLimitLastDealPrc(1D);
         instr.setMinQty(50000);
-
         storage.put(instr, instr.getSymbol());
-
 
         InstrHolder instr1 = new InstrHolder();
         instr1.setSymbol("EURKZT_TOD");
@@ -34,8 +32,10 @@ public class Orders {
         instr1.setLastPx(380.0);
         instr1.setDevLimitLastDealPrc(1D);
         instr1.setMinQty(50000);
-
         storage.put(instr1, instr1.getSymbol());
+
+        instrs = storage.findAll(InstrHolder.class);
+        Assert.assertNotNull(instrs);
     }
 
     @After
@@ -43,10 +43,9 @@ public class Orders {
         InMemoryHazelcastStorage.getInstance().disconnectDb();
     }
 
+    @Ignore
     @Test
     public void createRandomOrder() {
-        List<InstrHolder> instrs = storage.findAll(InstrHolder.class);
-        Assert.assertNotNull(instrs);
 
         int num = instrs.size();
         Assert.assertTrue(num > 0);
@@ -60,6 +59,20 @@ public class Orders {
             System.out.println(instr.getSymbol() + ": " + price);
             Assert.assertTrue(price >= minPrice && price <= maxPrice);
         }
+    }
+
+    @Test
+    public void nextRandomOrder() {
+        OrderGenerator generator = new OrderGenerator(storage);
+        NewOrderSingle order = generator.nextRandomOrder();
+        System.out.println(order.getSymbol() + ": " + order.getPrice());
+
+        InstrHolder instr = storage.get(InstrHolder.class, order.getSymbol());
+        Assert.assertNotNull(instr);
+
+        double maxPrice = order.getPrice() + instr.getDevLimitLastDealPrc();
+        double minPrice = order.getPrice() - instr.getDevLimitLastDealPrc();
+        Assert.assertTrue(order.getPrice() >= minPrice && order.getPrice() <= maxPrice);
     }
 
     private int nextRandomIdx(int num) {

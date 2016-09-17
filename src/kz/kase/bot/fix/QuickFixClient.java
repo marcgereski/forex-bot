@@ -218,7 +218,7 @@ public class QuickFixClient implements Application {
         return sessionID;
     }
 
-    public static long nextRef() {
+    public synchronized static long nextRef() {
         return refRand.nextInt(MAX_RAND_INT);
     }
 }
