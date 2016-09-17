@@ -1,7 +1,6 @@
-package kz.kase.bot.storage;
+package kz.kase.bot.client;
 
 
-import kz.kase.bot.TestClient;
 import org.apache.log4j.xml.DOMConfigurator;
 
 import java.util.HashMap;

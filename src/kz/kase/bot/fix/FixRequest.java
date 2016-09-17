@@ -1,13 +1,12 @@
 package kz.kase.bot.fix;
 
 import kz.kase.fix.SecurityListRequestType;
+import kz.kase.fix.Side;
 import kz.kase.fix.SubscriptionType;
-import kz.kase.fix.messages.MarketDataRequest;
-import kz.kase.fix.messages.OrderStatusRequest;
-import kz.kase.fix.messages.PositionRequest;
-import kz.kase.fix.messages.SecurityListRequest;
+import kz.kase.fix.messages.*;
 import org.apache.log4j.Logger;
 
+import java.util.Date;
 import java.util.List;
 
 
@@ -56,5 +55,17 @@ public class FixRequest {
             req.addInstrument("ALL");
         }
         fixClient.sendMessage(req);
+    }
+
+    public static void sendNewOrderSingle(QuickFixClient fixClient, String symbol, String acc, double price, long qty, Side side) {
+        NewOrderSingle order = new NewOrderSingle();
+        order.setRef(QuickFixClient.nextRef())
+                .setSymbol(symbol)
+                .setAccount(acc)
+                .setPrice(price)
+                .setQty(qty)
+                .setSide(side)
+                .setExpireDate(new Date());
+        fixClient.sendMessage(order);
     }
 }

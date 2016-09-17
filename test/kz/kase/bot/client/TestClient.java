@@ -1,4 +1,4 @@
-package kz.kase.bot;
+package kz.kase.bot.client;
 
 
 import kz.kase.bot.fix.FixMessReceiver;
@@ -11,6 +11,7 @@ import kz.kase.bot.model.domain.InstrHolder;
 import kz.kase.bot.storage.InMemoryHazelcastStorage;
 import kz.kase.bot.utils.certificate.SSLInfo;
 import kz.kase.fix.SecurityRequestResult;
+import kz.kase.fix.Side;
 import kz.kase.fix.SubscriptionType;
 import kz.kase.fix.core.FixUtils;
 import kz.kase.fix.messages.Logout;
@@ -96,6 +97,15 @@ public class TestClient implements EventBus.Listener {
         FixRequest.sendOrderStatusRequest(fixClient, orderStatusRequestRef);
 //        sendOrderStatusRequest();
 //        sendCalendarRequest();
+    }
+
+    public void sendRandomOrder() {
+        String symbol = "USDKZT_TOD";
+        String acc = "F_063_0000";
+        double price = 340;
+        long qty = 100000;
+        Side side = Side.BUY;
+        FixRequest.sendNewOrderSingle(fixClient, symbol, acc, price, qty, side);
     }
 
     private void logClientInfo(String login) throws ConfigError, FieldConvertError, KeyStoreException {
@@ -189,7 +199,9 @@ public class TestClient implements EventBus.Listener {
         System.out.println("Logon done...");
         if (login.equals("00908")) client.sendAfterReconnect();
 
-//        Thread.sleep(15000);
+        Thread.sleep(15000);
+        client.sendRandomOrder();
+
 //        client.stopClient();
 //        System.out.println("Stopped");
 

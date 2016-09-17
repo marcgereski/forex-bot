@@ -4,6 +4,8 @@ package kz.kase.bot.storage;
 import kz.kase.bot.model.domain.Holder;
 import kz.kase.bot.storage.predicate.*;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 abstract class InMemoryStorage implements Storage {
@@ -41,7 +43,7 @@ abstract class InMemoryStorage implements Storage {
 
     @Override
     public <T> List<T> findAll(Class<T> type) {
-        return null;
+        return new ArrayList<>(source.getAll(type));
     }
 
     public abstract void setDbSource(DbSource source);
