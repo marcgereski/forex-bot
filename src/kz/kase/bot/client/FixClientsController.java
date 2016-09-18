@@ -39,7 +39,7 @@ public class FixClientsController {
 
             service.scheduleWithFixedDelay(() -> {
                 FixClient client = clients.get(user);
-                boolean done = client.doSendRandomOrder();
+                boolean done = client.doSendRandomOrder(user);
                 if (done) log.info(user + " sent order :)");
                 else log.info(user + " - sending order was unsuccessful :(");
             }, initialDelay, period, TimeUnit.SECONDS);

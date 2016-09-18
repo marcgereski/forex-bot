@@ -100,8 +100,8 @@ public class FixClient implements EventBus.Listener {
         FixRequest.sendOrderStatusRequest(fixClient, orderStatusRequestRef);
     }
 
-    public boolean doSendRandomOrder() {
-        NewOrderSingle order = generator.nextRandomOrder();
+    public boolean doSendRandomOrder(String user) {
+        NewOrderSingle order = generator.nextRandomOrder(user);
         if (order == null) return false;
 
         order.setRef(QuickFixClient.nextRef());

@@ -1,6 +1,7 @@
 package kz.kase.bot.client;
 
 
+import kz.kase.bot.model.domain.AccountHolder;
 import kz.kase.bot.model.domain.InstrHolder;
 import kz.kase.bot.storage.Storage;
 import kz.kase.fix.SecStatus;
@@ -44,7 +45,7 @@ public class OrderGenerator {
         return lot * f;
     }
 
-    public NewOrderSingle nextRandomOrder() {
+    public NewOrderSingle nextRandomOrder(String user) {
         List<InstrHolder> ihs = storage.findAll(InstrHolder.class);
         List<InstrHolder> instrs = ihs.stream()
                 .filter(i->i.getStatus().equals(SecStatus.Active))
@@ -57,6 +58,12 @@ public class OrderGenerator {
             return null;
         }
 
+        AccountHolder acc = storage.findFirst(AccountHolder.class, a->a.getOwnerUsers().contains(user));
+        if (acc == null) {
+            log.info("No account found.");
+            return null;
+        }
+
         int index = nextRandomIdx(num);
         InstrHolder instr = instrs.get(index);
 
@@ -64,7 +71,7 @@ public class OrderGenerator {
 
         NewOrderSingle order = new NewOrderSingle();
         order.setSymbol(instr.getSymbol())
-                .setAccount("")
+                .setAccount(acc.getName())
                 .setSide(nextRandomSide())
                 .setPrice(price)
                 .setQty(nextRandomQty(instr.getLot()));

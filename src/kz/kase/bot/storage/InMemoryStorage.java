@@ -33,6 +33,10 @@ abstract class InMemoryStorage implements Storage {
 
     @Override
     public <T> T findFirst(Class<T> type, Predicate<T> predicate) {
+        List<T> list = new ArrayList<>(source.getAll(type));
+        for (T t : list) {
+            if (predicate.matches(t)) return t;
+        }
         return null;
     }
 
@@ -47,6 +51,10 @@ abstract class InMemoryStorage implements Storage {
     }
 
     public abstract void setDbSource(DbSource source);
+
+    public DbSource getSource() {
+        return source;
+    }
 
     public void disconnectDb() {
         source.disconnect();

@@ -28,7 +28,9 @@ public class FixParserTR implements FixParser {
     public AccountHolder parseAcc(PositionReport report, String symbol) {
         AccountHolder acc = new AccountHolder();
         acc.setName(report.getAccount());
-        PositionHolder pos = parsePositions(report, symbol);
+        acc.setOwnerUser(report.getHeader().getString(FixProtocol.FIELD_TARGET_COMP_ID));
+
+/*        PositionHolder pos = parsePositions(report, symbol);
         if (pos.getType() == PositionHolder.PosType.MONEY) {
             PositionHolder moneyPos = acc.getMoneyPosition(pos.getSymbol());
             if (moneyPos != null) {
@@ -45,7 +47,7 @@ public class FixParserTR implements FixParser {
             } else {
                 acc.addPosition(pos);
             }
-        }
+        }*/
         return acc;
     }
 

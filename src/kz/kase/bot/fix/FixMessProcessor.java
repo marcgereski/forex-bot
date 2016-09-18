@@ -3,20 +3,20 @@ package kz.kase.bot.fix;
 
 import kz.kase.bot.model.domain.*;
 import kz.kase.bot.storage.Storage;
+import kz.kase.bot.storage.predicate.InstrByExtCode;
 import kz.kase.bot.storage.predicate.TradeSessionBySymbol;
 import kz.kase.fix.OrdRejReason;
 import kz.kase.fix.OrderStatus;
 import kz.kase.fix.SecurityRequestResult;
 import kz.kase.fix.TradeCondition;
-import kz.kase.fix.messages.ExecutionReport;
-import kz.kase.fix.messages.MDIncRefresh;
-import kz.kase.fix.messages.SecurityList;
-import kz.kase.fix.messages.SecurityStatus;
+import kz.kase.fix.messages.*;
 import org.apache.log4j.Logger;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import static kz.kase.fix.FixProtocol.FIELD_SECURITY_ID;
 
 public class FixMessProcessor {
     private final static Logger log = Logger.getLogger(FixMessReceiver.class);
@@ -171,6 +171,44 @@ public class FixMessProcessor {
             log.info(logBuf);
         }
         return new FixUpdateImpl(data, newInstrs);
+    }
+
+    public FixUpdate processAndStore(PositionReport report) {
+        StringBuilder logBuf = new StringBuilder();
+        if (debug) {
+            logBuf.append("\nGot position report.").append("\n");
+        }
+
+        String extCode;
+        if (report.isSetField(FIELD_SECURITY_ID)) {
+            extCode = report.getSecurityId();
+        } else {
+            extCode = report.getCurrency();
+        }
+        InstrHolder instr = storage.findFirst(InstrHolder.class, new InstrByExtCode(extCode));
+        String symbol = instr != null ?
+                instr.getSymbol() : extCode;
+
+        AccountHolder newAcc = FixParserFactory.getInstance().parseAcc(report, symbol);
+        AccountHolder acc;
+        if (newAcc != null) {
+            if (newAcc.getName() != null) {
+                acc = storage.get(AccountHolder.class, report.getAccount());
+            } else {
+                return null;
+            }
+            if (acc != null) {
+                acc.update(newAcc);
+            } else {
+                storage.put(newAcc);
+            }
+
+            if (debug) {
+                logBuf.append(newAcc);
+                log.info(logBuf);
+            }
+        }
+        return new FixUpdateImpl(report, newAcc);
     }
 
     public void logOrderStatus(ExecutionReport report, OrderHolder newOrder) {

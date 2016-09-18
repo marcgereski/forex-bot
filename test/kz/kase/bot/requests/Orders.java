@@ -62,7 +62,7 @@ public class Orders {
     @Test
     public void nextRandomOrder() {
         OrderGenerator generator = new OrderGenerator(storage);
-        NewOrderSingle order = generator.nextRandomOrder();
+        NewOrderSingle order = generator.nextRandomOrder("");
         System.out.println(order.getSymbol() + ": " + order.getPrice());
 
         InstrHolder instr = storage.get(InstrHolder.class, order.getSymbol());

@@ -1,10 +1,6 @@
 package kz.kase.bot.model.domain;
 
 
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import kz.kase.fix.Product;
 
 import java.util.ArrayList;
@@ -17,15 +13,12 @@ public class AccountHolder implements Comparable, Holder {
 
     //    private final LongProperty id = new SimpleLongProperty();
 //    private boolean idSet;
-    private final StringProperty name = new SimpleStringProperty();
-    private boolean nameSet;
-
-    private final ObjectProperty<Product> marketType = new SimpleObjectProperty<>();
+    private String name;
+    private List<String> users = new ArrayList<>();
+    private Product marketType;
     private boolean hasMarketType;
     private final List<PositionHolder> moneyPositions = new ArrayList<>();
-
     private final List<PositionHolder> positions = new ArrayList<>();
-
     private final List<DayPositionHolder> dayPositions = new ArrayList<>();
 
 //    public long getId() {
@@ -41,27 +34,23 @@ public class AccountHolder implements Comparable, Holder {
 //    }
 
     public String getName() {
-        return name.get();
-    }
-
-    public StringProperty nameProperty() {
         return name;
     }
 
     public void setName(String name) {
-        this.name.set(name);
+        this.name = name;
     }
 
     public Product getMarketType() {
-        return marketType.get();
+        return marketType;
     }
 
-    public ObjectProperty<Product> marketTypeProperty() {
+    public Product marketTypeProperty() {
         return marketType;
     }
 
     public void setMarketType(Product marketType) {
-        this.marketType.set(marketType);
+        this.marketType = marketType;
         hasMarketType = true;
     }
 
@@ -81,10 +70,6 @@ public class AccountHolder implements Comparable, Holder {
                 return pos;
         }
         return null;
-    }
-
-    public boolean isNameSet() {
-        return nameSet;
     }
 
     public boolean hasMarketType() {
@@ -137,13 +122,13 @@ public class AccountHolder implements Comparable, Holder {
         return null;
     }
 
-    /*public DayPositionHolder getDayPosition(long id) {
-        for (DayPositionHolder dayPos : dayPositions) {
-            if (dayPos.getId() == id)
-                return dayPos;
-        }
-        return null;
-    }*/
+    public List<String> getOwnerUsers() {
+        return users;
+    }
+
+    public void setOwnerUser(String user) {
+        if (!users.contains(user)) users.add(user);
+    }
 
     public void update(AccountHolder newAcc) {
         if (newAcc.getPositions() != null) {
@@ -217,7 +202,7 @@ public class AccountHolder implements Comparable, Holder {
         if (obj != null) {
             if (obj instanceof AccountHolder) {
                 AccountHolder newAcc = (AccountHolder) obj;
-                return name.getValue().compareTo(newAcc.getName());
+                return name.compareTo(newAcc.getName());
             }
         }
         return 0;

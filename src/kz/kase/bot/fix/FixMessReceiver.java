@@ -34,12 +34,12 @@ public class FixMessReceiver {
             System.out.println();
 
         } else if (data instanceof PositionReport) {
-//            todo implement 'processAndStore(...)'
-//            update = interpreter.processAndStore((PositionReport) data);
+            update = interpreter.processAndStore((PositionReport) data);
             System.out.println();
 
-//        } else if (data instanceof ExecutionReport) {
+        } else if (data instanceof ExecutionReport) {
 //            update = interpreter.processAndStore((ExecutionReport) data);
+            System.out.println();
 
 //        } else if (data instanceof MMLiabilityList) {
 //            update = interpreter.processAndStore((MMLiabilityList) data);

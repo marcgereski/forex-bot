@@ -672,11 +672,9 @@ public class InstrHolder implements Holder {
 
     public void updateMarketData(InstrHolder newInstr, FixServerType serverType) {
 
-        if ((serverType == FixServerType.MarketData) ||
-                (newInstr.hasCurrSessionId() && hasCurrSessionId()
-                        && newInstr.getCurrSessionId().equals(getCurrSessionId()))) {
-
-
+//        if ((serverType == FixServerType.MarketData) ||
+//                (newInstr.hasCurrSessionId() && hasCurrSessionId()
+//                        && newInstr.getCurrSessionId().equals(getCurrSessionId()))) {
 
             if (newInstr.hasAveragePrc()) {
                 if (newInstr.getAveragePrc() != 0) {
@@ -684,7 +682,6 @@ public class InstrHolder implements Holder {
                 }
                 if (hasAveragePrcBeforeToday()) {
                     if (newInstr.getAveragePrc() != 0) {
-//                        double avgPrc =
                         double summ = newInstr.getAveragePrc() - getAveragePrcBeforeToday();
                         double perc = ((summ / getAveragePrcBeforeToday()) * 100);
                         setExchangeRate(summ);
@@ -696,7 +693,6 @@ public class InstrHolder implements Holder {
                 }
 
             }
-
 
             if (newInstr.hasAveragePrcBeforeToday()) {
                 setAveragePrcBeforeToday(newInstr.getAveragePrcBeforeToday());
@@ -732,9 +728,9 @@ public class InstrHolder implements Holder {
             if (newInstr.hasOpenPrice()) {
                 setOpenPrice(newInstr.getOpenPrice());
             }
-        }
+//        }
 
-        if (newInstr.hasAveragePrcBeforeToday()) {
+/*        if (newInstr.hasAveragePrcBeforeToday()) {
             setAveragePrcBeforeToday(newInstr.getAveragePrcBeforeToday());
             if (hasAveragePrc()) {
                 double summ = getAveragePrc() != 0.0 ? getAveragePrc() - newInstr.getAveragePrcBeforeToday() : 0.0;
@@ -742,7 +738,7 @@ public class InstrHolder implements Holder {
                 setExchangeRate(summ);
                 setExchangeRatePerc(perc);
             }
-        }
+        }*/
 
         if (newInstr.hasLDBTPriceSet()) {
             setLastDealBeforeTodayPrice(newInstr.getLastDealBeforeTodayPrice());
