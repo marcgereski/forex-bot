@@ -4,28 +4,46 @@ package kz.kase.bot.client;
 import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.io.File;
+import java.io.FileReader;
+import java.io.Reader;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class FixClientsController {
     public static final Logger log = Logger.getLogger(FixClientsController.class);
+    public static final String CLIENT_PROPERTIES = "client.properties";
+    public static final String LOG4J_PROPERTIES = "log4j.xml";
+    public static final String ROOT_USER = "root.user";
+    public static final String ROOT_PASS = "root.pass";
+    public static final String USERS_LIST = "users.list";
+    public static final String INITIAL_DEALY = "initial.dealy";
+    public static final String PERIOD = "period";
+    public static final String NUMBER_OF_THREADS = "number.of.threads";
+    public static final String DEFAULT_INITIAL_DELAY = "10";
+    public static final String DEFAULT_PERIOD = "30";
+    public static final String DEFAULT_NUMBER_OF_THREADS = "10";
 
-    public static final int INITIAL_DELAY = 10;
-    public static final int PERIOD = 30;
+    String rootUser;
+    String rootPassword;
+    List<String> users;
+    long initialDelay;
+    long period;
+    int numberOfPools = 10;
 
-    public static void main(String[] args) throws Exception {
-        DOMConfigurator.configure("log4j.xml");
+    public FixClientsController(String rootUser, String rootPassword, List<String> users,
+                                long initialDelay, long period, int numberOfPools) {
+        this.rootUser = rootUser;
+        this.users = users;
+        this.initialDelay = initialDelay;
+        this.period = period;
+        this.numberOfPools = numberOfPools;
+        this.rootPassword = rootPassword;
+    }
 
-        String rootUser = "01201";
-        String[] users = {"01207", "01201", "01323"};
-        long initialDelay = INITIAL_DELAY;
-        long period = PERIOD;
-        int numberOfPools = 10;
-        String rootPassword = "onion";
-
+    public void start() throws Exception {
         Map<String, FixClient> clients = new HashMap<>();
         ScheduledExecutorService service = Executors.newScheduledThreadPool(numberOfPools);
 
