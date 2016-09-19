@@ -32,6 +32,7 @@ public class Main {
         int numberOfPools = Integer.parseInt(props.getProperty(NUMBER_OF_THREADS, DEFAULT_NUMBER_OF_THREADS));
 
         FixClientsController controller = new FixClientsController(rootUser, rootPassword, users, initialDelay, period, numberOfPools);
+        controller.addShutDownHook();
         controller.start();
     }
 }

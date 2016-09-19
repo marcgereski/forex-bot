@@ -31,7 +31,8 @@ public class FixClientsController {
     List<String> users;
     long initialDelay;
     long period;
-    int numberOfPools = 10;
+    int numberOfPools;
+    Map<String, FixClient> clients = new HashMap<>();
 
     public FixClientsController(String rootUser, String rootPassword, List<String> users,
                                 long initialDelay, long period, int numberOfPools) {
@@ -44,7 +45,6 @@ public class FixClientsController {
     }
 
     public void start() throws Exception {
-        Map<String, FixClient> clients = new HashMap<>();
         ScheduledExecutorService service = Executors.newScheduledThreadPool(numberOfPools);
 
         for (String user : users) {
@@ -62,5 +62,21 @@ public class FixClientsController {
                 else log.info(user + " - sending order was unsuccessful :(");
             }, initialDelay, period, TimeUnit.SECONDS);
         }
+    }
+
+    public void addShutDownHook() {
+        final Thread mainThread = Thread.currentThread();
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            public void run() {
+                log.info("Stopping clients...");
+                clients.values().forEach(FixClient::stopClient);
+                log.info("Stopped");
+                try {
+                    mainThread.join();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 }
