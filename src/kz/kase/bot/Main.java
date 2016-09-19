@@ -2,8 +2,6 @@ package kz.kase.bot;
 
 import kz.kase.bot.client.FixClientsController;
 import org.apache.log4j.xml.DOMConfigurator;
-import org.mapdb.DB;
-import org.mapdb.DBMaker;
 
 import java.io.File;
 import java.io.FileReader;
@@ -11,7 +9,6 @@ import java.io.Reader;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
-import java.util.concurrent.ConcurrentMap;
 
 import static kz.kase.bot.client.FixClientsController.*;
 
@@ -32,7 +29,7 @@ public class Main {
         int numberOfPools = Integer.parseInt(props.getProperty(NUMBER_OF_THREADS, DEFAULT_NUMBER_OF_THREADS));
 
         FixClientsController controller = new FixClientsController(rootUser, rootPassword, users, initialDelay, period, numberOfPools);
-        controller.addShutDownHook();
+//        controller.addShutDownHook();
         controller.start();
     }
 }

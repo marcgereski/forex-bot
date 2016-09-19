@@ -131,6 +131,10 @@ public class AccountHolder implements Comparable, Holder {
     }
 
     public void update(AccountHolder newAcc) {
+        newAcc.getOwnerUsers().forEach(u->{
+            if (!users.contains(u)) users.add(u);
+        });
+
         if (newAcc.getPositions() != null) {
             for (PositionHolder newPos : newAcc.getPositions()) {
                 PositionHolder pos = getPosition(newPos.getSymbol());

@@ -11,7 +11,6 @@ import kz.kase.bot.model.domain.InstrHolder;
 import kz.kase.bot.storage.InMemoryHazelcastStorage;
 import kz.kase.bot.utils.certificate.SSLInfo;
 import kz.kase.fix.SecurityRequestResult;
-import kz.kase.fix.Side;
 import kz.kase.fix.SubscriptionType;
 import kz.kase.fix.core.FixUtils;
 import kz.kase.fix.messages.Logout;
@@ -25,7 +24,9 @@ import quickfix.SessionSettings;
 
 import java.io.FileInputStream;
 import java.security.KeyStoreException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 public class FixClient implements EventBus.Listener {
     private final Logger log = Logger.getLogger(this.getClass().getSimpleName());
@@ -105,6 +106,7 @@ public class FixClient implements EventBus.Listener {
         if (order == null) return false;
 
         order.setRef(QuickFixClient.nextRef());
+
         FixRequest.sendNewOrderSingle(fixClient, order);
         return true;
     }

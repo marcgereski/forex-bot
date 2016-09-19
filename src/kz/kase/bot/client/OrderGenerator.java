@@ -4,8 +4,9 @@ package kz.kase.bot.client;
 import kz.kase.bot.model.domain.AccountHolder;
 import kz.kase.bot.model.domain.InstrHolder;
 import kz.kase.bot.storage.Storage;
-import kz.kase.fix.SecStatus;
+import kz.kase.fix.OrderType;
 import kz.kase.fix.Side;
+import kz.kase.fix.TimeInForce;
 import kz.kase.fix.TradeCondition;
 import kz.kase.fix.messages.NewOrderSingle;
 import org.apache.log4j.Logger;
@@ -35,9 +36,10 @@ public class OrderGenerator {
         else return Side.SELL;
     }
 
-    public double nextRandomPrice(double lastDealPrice, int deviationInMilliPercents) {
+    public double nextRandomPrice(double lastDealPrice, int deviationInMilliPercents, int precision) {
         int d = random.nextInt(2 * deviationInMilliPercents) - deviationInMilliPercents;
-        return lastDealPrice + lastDealPrice * d / 100000;
+        double price = lastDealPrice + lastDealPrice * d / 100000;
+        return Math.round(price * 10 * precision) / 10.0 / precision;
     }
 
     public long nextRandomQty(long lot) {
@@ -48,7 +50,7 @@ public class OrderGenerator {
     public NewOrderSingle nextRandomOrder(String user) {
         List<InstrHolder> ihs = storage.findAll(InstrHolder.class);
         List<InstrHolder> instrs = ihs.stream()
-                .filter(i->i.getStatus().equals(SecStatus.Active))
+                .filter(i -> i.getTradeCondition() != null && !TradeCondition.Stopped.equals(i.getTradeCondition()))
                 .collect(Collectors.toList());
 
         int num = instrs.size();
@@ -58,7 +60,7 @@ public class OrderGenerator {
             return null;
         }
 
-        AccountHolder acc = storage.findFirst(AccountHolder.class, a->a.getOwnerUsers().contains(user));
+        AccountHolder acc = storage.findFirst(AccountHolder.class, a -> a.getOwnerUsers().contains(user));
         if (acc == null) {
             log.info("No account found.");
             return null;
@@ -67,14 +69,30 @@ public class OrderGenerator {
         int index = nextRandomIdx(num);
         InstrHolder instr = instrs.get(index);
 
-        double price = nextRandomPrice(instr.getLastPx(), (int) Math.round(instr.getDevLimitLastDealPrc() * 1000));
+        Double lastPx = instr.getLastPx();
+        Double limit = 0.1; //instr.getDevLimitLastDealPrc();
+
+        if (lastPx == null || limit == null) {
+            log.error("LastPrice or DevLimitLastPrice is absent");
+            return null;
+        }
+
+        double price = nextRandomPrice(lastPx, (int) Math.round(limit * 1000), 1);
 
         NewOrderSingle order = new NewOrderSingle();
         order.setSymbol(instr.getSymbol())
+                .setOrderType(OrderType.LIMIT)
                 .setAccount(acc.getName())
                 .setSide(nextRandomSide())
                 .setPrice(price)
+                .setTimeInForce(TimeInForce.AT_THE_CLOSE)
                 .setQty(nextRandomQty(instr.getLot()));
+
+        log.info("\n" + user + " SENDS LIMIT ORDER."
+                + "\nacc: " + order.getAccount()
+                + "\nside: " + order.getSide().getValue()
+                + "\nprice: " + order.getPrice()
+                + "\nqty: " + order.getQty());
         return order;
     }
 }

@@ -52,7 +52,7 @@ public class FixMessProcessor {
                     InstrHolder instr = storage.get(InstrHolder.class, newInstr.getKey());
                     if (instr != null) {
                         instr.updateSecurity(newInstr);
-//                        storage.put(instr, instr.getKey());
+                        storage.put(instr);
                     } else {
                         newInstr.setNumber(lastNumber.getAndIncrement());
                         storage.put(newInstr, newInstr.getKey());
@@ -101,6 +101,7 @@ public class FixMessProcessor {
                     }
                 }
                 instr.updateSecurityStatus(newInstr);
+                storage.put(instr);
             }
         }
 
@@ -111,6 +112,7 @@ public class FixMessProcessor {
             TradeSessionHolder ses = storage.get(TradeSessionHolder.class, newSes.getKey());
             if (ses != null) {
                 ses.update(newSes);
+                storage.put(ses);
             } else {
                 storage.put(newSes, newSes.getKey());
             }
@@ -146,6 +148,7 @@ public class FixMessProcessor {
                     InstrHolder instr = storage.get(InstrHolder.class, newInstr.getKey());
                     if (instr != null) {
                         instr.updateMarketData(newInstr, QuickFixClient.FixServerType.Transactional);
+                        storage.put(instr);
                     }
                 }
                 idx++;
@@ -159,6 +162,7 @@ public class FixMessProcessor {
                         TradeSessionHolder tradeSession = storage.get(TradeSessionHolder.class, newTradeSes.getKey());
                         if (tradeSession != null) {
                             tradeSession.update(newTradeSes);
+                            storage.put(tradeSession);
                         } else {
                             storage.put(newTradeSes);
                         }
@@ -199,6 +203,7 @@ public class FixMessProcessor {
             }
             if (acc != null) {
                 acc.update(newAcc);
+                storage.put(acc);
             } else {
                 storage.put(newAcc);
             }

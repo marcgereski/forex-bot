@@ -212,7 +212,7 @@ public class FixParserTR implements FixParser {
                     result.put(symbol, instr);
                 }
 
-                if (g.isSetField(FIELD_TRADE_SESSION_ID)) {
+//                if (g.isSetField(FIELD_TRADE_SESSION_ID)) {
                     int sesId = g.getInt(FIELD_TRADE_SESSION_ID);
                     if (!instr.hasCurrSessionId()
                             || instr.getCurrSessionId() < sesId) {
@@ -263,7 +263,7 @@ public class FixParserTR implements FixParser {
                             instr.setExchangeRatePerc(0D);
                         }
                     }
-                }
+//                }
 
                 if (g.isSetField(FIELD_AVG_PRC_PREV)) {
                     instr.setAveragePrcBeforeToday(g.getDouble(FIELD_AVG_PRC_PREV));
