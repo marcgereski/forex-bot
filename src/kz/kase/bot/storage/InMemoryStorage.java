@@ -2,10 +2,9 @@ package kz.kase.bot.storage;
 
 
 import kz.kase.bot.model.domain.Holder;
-import kz.kase.bot.storage.predicate.*;
+import kz.kase.bot.storage.predicate.Predicate;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 abstract class InMemoryStorage implements Storage {

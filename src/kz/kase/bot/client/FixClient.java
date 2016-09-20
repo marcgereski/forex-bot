@@ -145,6 +145,9 @@ public class FixClient implements EventBus.Listener {
             } else if (QuickFixClient.WRONG_PASSWORD.equals(data)) {
                 authorizationAccepted = false;
                 log.error("WRONG_PASSWORD");
+            } else if (QuickFixClient.WRONG_USER.equals(data)) {
+                authorizationAccepted = false;
+                log.error("WRONG_USER");
             }
         } else if (QuickFixClient.FIX_EVENT.equals(eventName)) {
             switch (eventName) {

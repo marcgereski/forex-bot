@@ -1,14 +1,14 @@
 package kz.kase.bot.fix;
 
 
+import kz.kase.bot.client.OrderGenerator;
 import kz.kase.bot.model.EventBus;
 import kz.kase.bot.model.domain.FixUpdate;
 import kz.kase.fix.EncryptMethod;
 import kz.kase.fix.factory.KaseFixMessageFactory;
 import kz.kase.fix.messages.Logon;
 import kz.kase.fix.messages.Logout;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 import quickfix.*;
 import quickfix.logging.LogFactory;
 import quickfix.logging.NextLogFactory;
@@ -27,6 +27,7 @@ public class QuickFixClient implements Application {
     public static final String FIX_LOGGED_OUT = "LOGGED_OUT";
     public static final String RECONNECT_ATTEMPTS = "ReconnectAttempts";
     public static final String WRONG_PASSWORD = "Wrong password";
+    public static final String WRONG_USER = "Wrong user";
     public static final String ALREADY_ONLINE = "Already online";
     public static final int MAX_RAND_INT = 1000000;
     public SessionID sessionID;
@@ -58,7 +59,7 @@ public class QuickFixClient implements Application {
         isMD = stat;
     }
 
-    private static final Logger log = LoggerFactory.getLogger(QuickFixClient.class);
+    private final static Logger log = Logger.getLogger(OrderGenerator.class);
 
     public QuickFixClient(String login, String password,
                           EventBus eventBus,
@@ -128,17 +129,28 @@ public class QuickFixClient implements Application {
     public void fromAdmin(Message message, SessionID sessionID) throws IncorrectDataFormat, IncorrectTagValue, RejectLogon {
         if (message instanceof Logout) {
             Logout logout = (Logout) message;
-            if (logout.getText().equals(WRONG_PASSWORD) ||
-                    logout.getText().equals(ALREADY_ONLINE)) {
-                eventBus.fireOnEvent(FIX_SESSION_EVENT, logout);
-            } else {
-                reconnectQnt++;
-                reconnecting = true;
-                if (reconnectQnt > reconnectAttempts) {
-                    System.out.println("logout");
+
+            switch (logout.getText()) {
+                case WRONG_PASSWORD:
+                    log.error("Wrong password");
                     eventBus.fireOnEvent(FIX_SESSION_EVENT, logout);
-                    reconnectQnt = 0;
-                }
+                    System.exit(0);
+                case WRONG_USER:
+                    log.error("Wrong user");
+                    eventBus.fireOnEvent(FIX_SESSION_EVENT, logout);
+                    System.exit(0);
+                case ALREADY_ONLINE:
+                    log.error("Already online");
+                    eventBus.fireOnEvent(FIX_SESSION_EVENT, logout);
+                    break;
+                default:
+                    reconnectQnt++;
+                    reconnecting = true;
+                    if (reconnectQnt > reconnectAttempts) {
+                        System.out.println("logout");
+                        eventBus.fireOnEvent(FIX_SESSION_EVENT, logout);
+                        reconnectQnt = 0;
+                    }
             }
         }
 

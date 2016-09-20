@@ -88,11 +88,11 @@ public class OrderGenerator {
                 .setTimeInForce(TimeInForce.AT_THE_CLOSE)
                 .setQty(nextRandomQty(instr.getLot()));
 
-        log.info("\n" + user + " SENDS LIMIT ORDER."
-                + "\nacc: " + order.getAccount()
-                + "\nside: " + order.getSide().getValue()
-                + "\nprice: " + order.getPrice()
-                + "\nqty: " + order.getQty());
+        log.info("\n\t" + user + " SENDS LIMIT ORDER."
+                + "\n\t\tacc:   " + order.getAccount()
+                + "\n\t\tside:  " + order.getSide().name()
+                + "\n\t\tprice: " + order.getPrice()
+                + "\n\t\tqty:   " + order.getQty());
         return order;
     }
 }
