@@ -744,9 +744,9 @@ public class InstrHolder implements Holder {
             setLastDealBeforeTodayPrice(newInstr.getLastDealBeforeTodayPrice());
         }
 
-        if (newInstr.getQuotes().size() == 0) return;
+//        if (newInstr.getQuotes().size() == 0) return;
 
-        List<QuoteHolder> newQuotesList = newInstr.getQuotes();
+//        List<QuoteHolder> newQuotesList = newInstr.getQuotes();
 
 /*        for (QuoteHolder newQuote : newQuotesList) {
             QuoteHolder quote = getQuote(newQuote.getPrice(), newQuote.getType());

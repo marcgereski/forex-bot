@@ -138,7 +138,7 @@ public class FixMessProcessor {
                     append(newInstrs.size()).
                     append("):").
                     append("\n");
-            newInstrs.forEach(i->i.getQuotes().forEach(logBuf::append));
+//            newInstrs.forEach(i->i.getQuotes().forEach(logBuf::append));
 
             int idx = 0;
             for (InstrHolder newInstr : newInstrs) {
