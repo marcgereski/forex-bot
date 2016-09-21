@@ -748,7 +748,7 @@ public class InstrHolder implements Holder {
 
         List<QuoteHolder> newQuotesList = newInstr.getQuotes();
 
-        for (QuoteHolder newQuote : newQuotesList) {
+/*        for (QuoteHolder newQuote : newQuotesList) {
             QuoteHolder quote = getQuote(newQuote.getPrice(), newQuote.getType());
             if (quote != null) {
                 if (newQuote.getQty() != 0) {
@@ -818,7 +818,7 @@ public class InstrHolder implements Holder {
             newInstr.setBestSellVolume(newBestSell.getQty());
         } else {
             clearBestSellPrcVol();
-        }
+        }*/
     }
 
     public void updateSecurity(InstrHolder newInstr) {
