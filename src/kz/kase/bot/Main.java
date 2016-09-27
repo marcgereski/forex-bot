@@ -1,6 +1,7 @@
 package kz.kase.bot;
 
 import kz.kase.bot.client.FixClientsController;
+import kz.kase.bot.utils.logger.SoutLogger;
 import org.apache.log4j.xml.DOMConfigurator;
 
 import java.io.File;
@@ -16,6 +17,7 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
         DOMConfigurator.configure(LOG4J_PROPERTIES);
+        SoutLogger.tieSystemOutAndErrToLog();
 
         Properties props = new Properties();
         Reader reader = new FileReader(new File(CLIENT_PROPERTIES));

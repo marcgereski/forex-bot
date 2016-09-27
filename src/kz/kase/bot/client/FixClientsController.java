@@ -2,12 +2,10 @@ package kz.kase.bot.client;
 
 
 import org.apache.log4j.Logger;
-import org.apache.log4j.xml.DOMConfigurator;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.Reader;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -25,6 +23,8 @@ public class FixClientsController {
     public static final String DEFAULT_INITIAL_DELAY = "10";
     public static final String DEFAULT_PERIOD = "30";
     public static final String DEFAULT_NUMBER_OF_THREADS = "10";
+
+    private volatile int sentOrders = 0;
 
     String rootUser;
     String rootPassword;
@@ -58,7 +58,10 @@ public class FixClientsController {
             service.scheduleWithFixedDelay(() -> {
                 FixClient client = clients.get(user);
                 boolean done = client.doSendRandomOrder(user);
-                if (done) log.info(user + " sent order :)");
+                if (done) {
+                    sentOrders = sentOrders + 1;
+                    log.info(user + " SENT LIMIT ORDER #" + sentOrders);
+                }
                 else log.info(user + " - sending order was unsuccessful :(");
             }, initialDelay, period, TimeUnit.SECONDS);
         }
